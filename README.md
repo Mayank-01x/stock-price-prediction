@@ -68,21 +68,13 @@ Then visit: [http://localhost:10000](http://localhost:10000)
 
 ---
 
-## 📸 Screenshots
+## 🙋 Author
 
-| Input Form | Interactive Chart | Prediction Table |
-|------------|-------------------|------------------|
-| ![](https://via.placeholder.com/250x150?text=Input+Form) | ![](https://via.placeholder.com/250x150?text=Chart) | ![](https://via.placeholder.com/250x150?text=Table) |
-
----
-
-## 🙋‍♂️ Author
-
-Made with ❤️ by **[Mayank Aggarwal](https://github.com/Mayank-01x)**  
-Part of the **Gibber Media Agency** initiative.
+**Mayank Aggarwal**  
+GitHub: [@Mayank-01x](https://github.com/Mayank-01x/Object-Detection)
 
 ---
 
-## 📜 License
+## 📄 License
 
-MIT License
+This project is licensed under the **MIT License**.
