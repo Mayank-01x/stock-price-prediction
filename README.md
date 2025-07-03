@@ -1,4 +1,7 @@
 
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Mayank--01x%2Fstock--price--prediction-blue?logo=github)](https://github.com/Mayank-01x/stock-price-prediction)
+[![Live on Render](https://img.shields.io/badge/Live-Demo-success?logo=render)](https://stock-price-prediction-cyrf.onrender.com)
+
 # 📈 Stock Price Prediction Web App
 
 This is an interactive stock price prediction web application built with **Flask**, **scikit-learn**, and **Plotly**. It allows users to select or search global stock symbols, choose a historical date range, and predict future stock prices using a machine learning model.
