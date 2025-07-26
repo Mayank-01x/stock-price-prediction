@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stock Price Predictor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f5f9;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h2 { text-align: center; color: #333; }
+    label { font-weight: bold; margin-top: 10px; display: block; }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      margin-top: 15px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .error {
+      color: red;
+      margin-top: 10px;
+      text-align: center;
+    }
+    .output {
+      margin-top: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+    iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    .autocomplete-items {
+      position: absolute;
+      background: white;
+      border: 1px solid #d4d4d4;
+      border-top: none;
+      z-index: 99;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    .autocomplete-items div {
+      padding: 10px;
+      cursor: pointer;
+    }
+    .autocomplete-items div:hover {
+      background-color: #e9e9e9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📈 Stock Price Predictor (with Autocomplete)</h2>
+    <form method="POST" autocomplete="off">
+      <label>Select Popular Stock</label>
+      <select onchange="document.getElementById('tickerInput').value = this.value;">
+        <option value="">-- Select a popular stock --</option>
+        <option value="AAPL">AAPL</option>
+        <option value="TSLA">TSLA</option>
+        <option value="GOOGL">GOOGL</option>
+        <option value="MSFT">MSFT</option>
+        <option value="NFLX">NFLX</option>
+        <option value="META">META</option>
+        <option value="AMZN">AMZN</option>
+        <option value="INFY.NS">INFY.NS</option>
+        <option value="RELIANCE.NS">RELIANCE.NS</option>
+        <option value="TCS.NS">TCS.NS</option>
+      </select>
+
+      <label>Or Type Stock Symbol (e.g., AAPL, BTC-USD)</label>
+      <input id="tickerInput" type="text" name="ticker" value="{{ ticker }}" placeholder="Enter or search stock symbol..." required>
+
+      <label>Start Date</label>
+      <input type="date" name="start_date" value="{{ start_date }}" required>
+
+      <label>End Date</label>
+      <input type="date" name="end_date" value="{{ end_date }}" required>
+
+      <label>Prediction Days</label>
+      <input type="number" name="days" value="{{ days }}" min="1" max="180" required>
+
+      <button type="submit">Predict</button>
+    </form>
+
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if rmse %}
+      <div class="output">
+        <h3>RMSE: {{ rmse | round(2) }}</h3>
+        <iframe src="/static/interactive_plot.html"></iframe>
+        <h3>📅 Next {{ days }}-Day Predictions</h3>
+        <table>
+          <tr><th>Date</th><th>Predicted Price</th></tr>
+          {% for date, price in predictions %}
+            <tr><td>{{ date }}</td><td>{{ price }}</td></tr>
+          {% endfor %}
+        </table>
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    const popularTickers = ["AAPL", "TSLA", "GOOGL", "MSFT", "NFLX", "META", "AMZN", "INFY.NS", "RELIANCE.NS", "TCS.NS", "IBM", "BTC-USD", "ETH-USD"];
+
+    const input = document.getElementById("tickerInput");
+    let currentFocus;
+
+    input.addEventListener("input", function () {
+      closeAllLists();
+      const val = this.value;
+      if (!val) return false;
+      currentFocus = -1;
+
+      const list = document.createElement("div");
+      list.setAttribute("id", this.id + "autocomplete-list");
+      list.setAttribute("class", "autocomplete-items");
+      this.parentNode.appendChild(list);
+
+      popularTickers.forEach(ticker => {
+        if (ticker.toUpperCase().startsWith(val.toUpperCase())) {
+          const item = document.createElement("div");
+          item.innerHTML = "<strong>" + ticker.substr(0, val.length) + "</strong>";
+          item.innerHTML += ticker.substr(val.length);
+          item.addEventListener("click", function () {
+            input.value = ticker;
+            closeAllLists();
+          });
+          list.appendChild(item);
+        }
+      });
+    });
+
+    function closeAllLists(elmnt) {
+      const items = document.getElementsByClassName("autocomplete-items");
+      for (let i = 0; i < items.length; i++) {
+        if (elmnt != items[i] && elmnt != input) {
+          items[i].parentNode.removeChild(items[i]);
+        }
+      }
+    }
+
+    document.addEventListener("click", function (e) {
+      closeAllLists(e.target);
+    });
+  </script>
+</body>
+</html>
